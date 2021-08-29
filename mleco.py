@@ -54,3 +54,15 @@ def handler(inpt: str) -> List[Number]:
 
 
 h = handler
+
+
+def report_calculations(data: Union[List[Number], str]) -> dict:
+    if isinstance(data, str):
+        data = handler(data)
+
+    return {
+        "average": average(data),
+        "variance": variance(data),
+        "standard_deviation": standard_deviation(data),
+        "coefficient_of_variation": coefficient_of_variation(data),
+    }
