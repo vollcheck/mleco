@@ -28,13 +28,26 @@ def standard_deviation(data: List[Number]) -> float:
 def coefficient_of_variation(
     data: List[Number], in_percents: bool = False
 ) -> Union[str, float]:
-    cov = standard_deviation(data)/average(data)
+    cfc = standard_deviation(data)/average(data)
     if in_percents:
-        return f'{cov*100:.2f}%'
-    return cov
+        return f'{cfc*100:.2f}%'
+    return cfc
 
 
-def handler(inpt: str) -> List[Number]:
+def covariance(xs: List[Number], ys: List[Number]) -> float:
+    assert len(xs) == len(ys)
+    xs_avg, ys_avg = average(xs), average(ys)
+    return sum((x - xs_avg)*(y - ys_avg) for x, y in zip(xs, ys))/len(xs)
+
+
+def pearson_correlation_coefficient(xs: List[Number], ys: List[Number]) -> float:
+    """
+    Calculates Pearson linear correlation coefficient.
+    """
+    return covariance(xs, ys) / (variance(xs) * variance(ys))
+
+
+def input_handler(inpt: str) -> List[Number]:
     """
     Allows user to make input easier.
 
@@ -53,12 +66,12 @@ def handler(inpt: str) -> List[Number]:
     ]
 
 
-h = handler
+h = input_handler
 
 
 def report_calculations(data: Union[List[Number], str]) -> dict:
     if isinstance(data, str):
-        data = handler(data)
+        data = input_handler(data)
 
     return {
         "average": average(data),

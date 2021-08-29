@@ -22,3 +22,20 @@ def test_coefficient_of_variation_default(data):
 
 def test_coefficient_of_variation_in_percents(data):
     assert mleco.coefficient_of_variation(data, in_percents=True) == "56.34%"
+
+
+def test_covariance():
+    raise NotImplementedError
+
+
+def test_pearson_correlation_coefficient():
+    raise NotImplementedError
+
+
+def test_pearson_correlation_coefficient_property_of_identity(xs):
+    assert mleco.pearson_correlation_coefficient(xs, xs) == 1
+
+
+def test_pearson_correlation_coefficient_property_of_range(xs, ys):
+    pcc = mleco.pearson_correlation_coefficient(xs, ys)
+    assert pcc < 1 and pcc > -1
