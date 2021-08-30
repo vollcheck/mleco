@@ -1,41 +1,41 @@
+import unittest
+
 import mleco
 
 
 test_data = [1, 6, 6, 3, 12, 5, 9]
+xs = ys = [1, 2]
 
 
-def test_average(data):
-    assert mleco.average(data) == 6
+class TestMleco(unittest.TestCase):
+    def test_average(self):
+        assert mleco.average(test_data) == 6
+
+    def test_variance(self):
+        assert mleco.variance(test_data) == 11.428571428571429
+
+    def test_standard_deviation(self):
+        assert mleco.standard_deviation(test_data) == 3.3806170189140663
+
+    def test_coefficient_of_variation_default(self):
+        assert mleco.coefficient_of_variation(test_data) == 0.563436169819011
+
+    def test_coefficient_of_variation_in_percents(self):
+        assert mleco.coefficient_of_variation(test_data, in_percents=True) == "56.34%"
+
+    def test_covariance(self):
+        raise NotImplementedError
+
+    def test_pearson_correlation_coefficient(self):
+        raise NotImplementedError
+
+    def test_pearson_correlation_coefficient_property_of_identity(self):
+        assert mleco.pearson_correlation_coefficient(xs, xs) == 1
+
+    def test_pearson_correlation_coefficient_property_of_range(self):
+        pcc = mleco.pearson_correlation_coefficient(xs, ys)
+        assert pcc >= 1 and pcc >= -1
 
 
-def test_variance(data):
-    assert mleco.variance(data) == 11.428571428571429
-
-
-def test_standard_deviation(data):
-    assert mleco.standard_deviation(data) == 3.3806170189140663
-
-
-def test_coefficient_of_variation_default(data):
-    assert mleco.coefficient_of_variation(data) == 0.563436169819011
-
-
-def test_coefficient_of_variation_in_percents(data):
-    assert mleco.coefficient_of_variation(data, in_percents=True) == "56.34%"
-
-
-def test_covariance():
-    raise NotImplementedError
-
-
-def test_pearson_correlation_coefficient():
-    raise NotImplementedError
-
-
-def test_pearson_correlation_coefficient_property_of_identity(xs):
-    assert mleco.pearson_correlation_coefficient(xs, xs) == 1
-
-
-def test_pearson_correlation_coefficient_property_of_range(xs, ys):
-    pcc = mleco.pearson_correlation_coefficient(xs, ys)
-    assert pcc < 1 and pcc > -1
+if __name__ == "__main__":
+    unittest.main()
