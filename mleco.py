@@ -1,6 +1,6 @@
 from math import sqrt
 
-from typing import List, Union
+from typing import Dict, List, Union
 
 
 Number = Union[int, float]
@@ -44,7 +44,49 @@ def pearson_correlation_coefficient(xs: List[Number], ys: List[Number]) -> float
     """
     Calculates Pearson linear correlation coefficient.
     """
-    return covariance(xs, ys) / (variance(xs) * variance(ys))
+
+    # TODO: write implementation for more than one explanatory variable
+    #       also do we need matrices?
+
+    return covariance(xs, ys) / (standard_deviation(xs) * standard_deviation(ys))
+
+
+def interpret_pcc(pcc: float) -> Dict[str, str]:
+    """
+    Function returns `pcc` which stands for
+    *Pearson linear correlation coefficient*.
+    """
+    # TODO: make enum with decisions
+
+    direction: str = ""
+
+    if pcc == 0:
+        direction = "no correlation"
+    elif pcc > 0:
+        direction = "positive"
+    elif pcc < 0:
+        direction = "negative"
+
+    strength = ""
+
+    pcc = abs(pcc)
+
+    if pcc <= 0.2:
+        strength = "no correlation or very weak"
+    if pcc <= 0.4:
+        strength = "weak"
+    if pcc <= 0.7:
+        strength = "moderate"
+    if pcc <= 0.9:
+        strength = "strong"
+    if pcc <= 1:
+        strength = "very strong"
+
+    return {
+        "direction": direction,
+        "strength": strength
+    }
+
 
 
 def input_handler(inpt: str) -> List[Number]:

@@ -42,4 +42,4 @@
 (defn ^float pearson-correlation-coefficient [^NumberList xs ^NumberList
 ys]
    "Calculates Pearson linear correlation coefficient."
-   (/ (covariance xs ys) (* (variance xs) (variance ys))))
+   (/ (covariance xs ys) (* (standard-deviation xs) (standard-deviation ys))))
