@@ -40,6 +40,18 @@ def covariance(xs: List[Number], ys: List[Number]) -> float:
     return sum((x - xs_avg)*(y - ys_avg) for x, y in zip(xs, ys))/len(xs)
 
 
+# TODO:
+# For allowing calculations of covariance or pcc, we can make combinations
+# out of available variables.
+#
+# from itertools import combinations
+# list(map(lambda pair: covariance(*pair), combinations([ys, xs1, xs2], 2)))
+# >>> [1208.5, 576.0, 546.0]
+#
+# list(map(lambda pair: pearson_correlation_coefficient(*pair), combinations([ys, xs1, xs2], 2)))
+# [0.9714911154609688, 0.5691548168397905, 0.6446999952267405]
+
+
 def pearson_correlation_coefficient(xs: List[Number], ys: List[Number]) -> float:
     """
     Calculates Pearson linear correlation coefficient.
