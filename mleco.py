@@ -1,43 +1,63 @@
+from itertools import combinations
 from math import sqrt
 
 from typing import Dict, List, Union
 
 
-Number = Union[int, float]
+Numbers = List[Union[int, float]]
 
 
-def average(data: List[Number]) -> float:
+def average(data: Numbers) -> float:
     """
     Calculates an arithmetic average.
     """
-    return sum(data)/len(data)
+    return sum(data) / len(data)
 
 
-def variance(data: List[Number]) -> float:
+def variance(data: Numbers) -> float:
     """
     Calculates a variance.
     """
     avg = average(data)
-    return sum((x-avg)**2 for x in data)/len(data)
+    return sum((x - avg) ** 2 for x in data) / len(data)
 
 
-def standard_deviation(data: List[Number]) -> float:
+def standard_deviation(data: Numbers) -> float:
     return sqrt(variance(data))
 
 
 def coefficient_of_variation(
-    data: List[Number], in_percents: bool = False
+    data: Numbers, in_percents: bool = False
 ) -> Union[str, float]:
-    cfc = standard_deviation(data)/average(data)
+    cfc = abs(standard_deviation(data) / average(data))
     if in_percents:
-        return f'{cfc*100:.2f}%'
+        return f"{cfc*100:.2f}%"
     return cfc
 
 
-def covariance(xs: List[Number], ys: List[Number]) -> float:
-    assert len(xs) == len(ys)
+def covariance(xs: Numbers, ys: Numbers, *args) -> float:
+    assert len(xs) == len(ys), "Different-length collections"
     xs_avg, ys_avg = average(xs), average(ys)
-    return sum((x - xs_avg)*(y - ys_avg) for x, y in zip(xs, ys))/len(xs)
+    return sum((x - xs_avg) * (y - ys_avg) for x, y in zip(xs, ys)) / len(xs)
+
+
+def covariance_m(*args) -> List[float]:
+    assert len(args) > 1, "Too few collections"
+    # also all colls must have equal length
+
+    # order is important
+    averages: List[float] = [average(coll) for coll in args]
+
+    colls_with_averages = zip(args, averages)
+
+    # pairs are being made in greedy-per-collection manner:
+    # given x1, x2, x3 collections,
+    # it will exhaust x1, later x2 and eventually x3
+    # x1-x2, x1-x3, x2-x3
+    pairs = combinations(args, 2)
+
+    for idx, coll in enumerate(args):
+        pass
 
 
 # TODO:
@@ -52,7 +72,7 @@ def covariance(xs: List[Number], ys: List[Number]) -> float:
 # [0.9714911154609688, 0.5691548168397905, 0.6446999952267405]
 
 
-def pearson_correlation_coefficient(xs: List[Number], ys: List[Number]) -> float:
+def pearson_correlation_coefficient(xs: Numbers, ys: Numbers) -> float:
     """
     Calculates Pearson linear correlation coefficient.
     """
@@ -94,14 +114,10 @@ def interpret_pcc(pcc: float) -> Dict[str, str]:
     if pcc <= 1:
         strength = "very strong"
 
-    return {
-        "direction": direction,
-        "strength": strength
-    }
+    return {"direction": direction, "strength": strength}
 
 
-
-def input_handler(inpt: str) -> List[Number]:
+def input_handler(inpt: str) -> Numbers:
     """
     Allows user to make input easier.
 
@@ -114,16 +130,17 @@ def input_handler(inpt: str) -> List[Number]:
 
     For me that's simply faster.
     """
-    return [
-        int(x) if float(x).is_integer else float(x)
-        for x in inpt.split(" ")
-    ]
+    return [int(x) if float(x).is_integer() else float(x) for x in inpt.split(" ")]
 
 
 h = input_handler
 
 
-def report_calculations(data: Union[List[Number], str]) -> dict:
+def report_calculation(data: Union[Numbers, str]) -> dict:
+    """
+    Performs all steps required to calculate coefficient of variation of the
+    given vector.
+    """
     if isinstance(data, str):
         data = input_handler(data)
 
@@ -132,4 +149,35 @@ def report_calculations(data: Union[List[Number], str]) -> dict:
         "variance": variance(data),
         "standard_deviation": standard_deviation(data),
         "coefficient_of_variation": coefficient_of_variation(data),
+    }
+
+
+def report_calculations(xs: Union[Numbers, str], ys: Union[Numbers, str]) -> dict:
+    """
+    Performs all steps required to calculate Pearson linear correlation coefficient
+    between two vectors.
+
+    :TODO: allow function process more than two vectors
+    """
+
+    def validate(coll: Union[Numbers, str]) -> Numbers:
+        if isinstance(coll, str):
+            return input_handler(coll)
+
+    xs, ys = [validate(coll) for coll in [xs, ys]]
+
+    return {
+        # todo: rewrite that to minimize the boilerplate
+        "xs": {
+            "average": average(xs),
+            "variance": variance(xs),
+            "standard_deviation": standard_deviation(xs),
+        },
+        "ys": {
+            "average": average(ys),
+            "variance": variance(ys),
+            "standard_deviation": standard_deviation(ys),
+        },
+        "covariance": covariance(xs, ys),
+        "pearson_correlation_coefficient": pearson_correlation_coefficient(xs, ys),
     }
