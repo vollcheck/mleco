@@ -1,86 +1,10 @@
-from itertools import combinations
-from math import sqrt
+"""
+Module with functions that helps with dealing with formulas and reporting its results.
+"""
 
-from typing import Dict, List, Union
+from typing import Dict, Union
 
-
-Numbers = List[Union[int, float]]
-
-
-def average(data: Numbers) -> float:
-    """
-    Calculates an arithmetic average.
-    """
-    return sum(data) / len(data)
-
-
-def variance(data: Numbers) -> float:
-    """
-    Calculates a variance.
-    """
-    avg = average(data)
-    return sum((x - avg) ** 2 for x in data) / len(data)
-
-
-def standard_deviation(data: Numbers) -> float:
-    return sqrt(variance(data))
-
-
-def coefficient_of_variation(
-    data: Numbers, in_percents: bool = False
-) -> Union[str, float]:
-    cfc = abs(standard_deviation(data) / average(data))
-    if in_percents:
-        return f"{cfc*100:.2f}%"
-    return cfc
-
-
-def covariance(xs: Numbers, ys: Numbers, *args) -> float:
-    assert len(xs) == len(ys), "Different-length collections"
-    xs_avg, ys_avg = average(xs), average(ys)
-    return sum((x - xs_avg) * (y - ys_avg) for x, y in zip(xs, ys)) / len(xs)
-
-
-def covariance_m(*args) -> List[float]:
-    assert len(args) > 1, "Too few collections"
-    # also all colls must have equal length
-
-    # order is important
-    averages: List[float] = [average(coll) for coll in args]
-
-    colls_with_averages = zip(args, averages)
-
-    # pairs are being made in greedy-per-collection manner:
-    # given x1, x2, x3 collections,
-    # it will exhaust x1, later x2 and eventually x3
-    # x1-x2, x1-x3, x2-x3
-    pairs = combinations(args, 2)
-
-    for idx, coll in enumerate(args):
-        pass
-
-
-# TODO:
-# For allowing calculations of covariance or pcc, we can make combinations
-# out of available variables.
-#
-# from itertools import combinations
-# list(map(lambda pair: covariance(*pair), combinations([ys, xs1, xs2], 2)))
-# >>> [1208.5, 576.0, 546.0]
-#
-# list(map(lambda pair: pearson_correlation_coefficient(*pair), combinations([ys, xs1, xs2], 2)))
-# [0.9714911154609688, 0.5691548168397905, 0.6446999952267405]
-
-
-def pearson_correlation_coefficient(xs: Numbers, ys: Numbers) -> float:
-    """
-    Calculates Pearson linear correlation coefficient.
-    """
-
-    # TODO: write implementation for more than one explanatory variable
-    #       also do we need matrices?
-
-    return covariance(xs, ys) / (standard_deviation(xs) * standard_deviation(ys))
+from types import Numbers
 
 
 def interpret_pcc(pcc: float) -> Dict[str, str]:
