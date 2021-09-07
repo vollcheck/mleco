@@ -3,7 +3,7 @@ from math import sqrt
 
 from typing import List, Union
 
-from types import Numbers
+from mleco.types import Numbers
 
 
 def average(xs: Numbers) -> float:
@@ -35,45 +35,30 @@ def coefficient_of_variation(
     return cfc
 
 
-def covariance(xs: Numbers, ys: Numbers, *args) -> float:
-    assert len(xs) == len(ys), "Different-length collections"
-    xs_avg, ys_avg = average(xs), average(ys)
-    return sum((x - xs_avg) * (y - ys_avg) for x, y in zip(xs, ys)) / len(xs)
-
-
-def covariance_m(*colls) -> List[float]:
+def covariance(*colls) -> List[float]:
     """
     Function for calculating covariance for more than two collections.
+
+    It play around with combinations so that every element has a pair.
     """
-
     assert len(colls) > 1, "Too few collections"
-    assert all(len(c) == len(colls[0]) for c in colls), "Wrong length of one of the collections"
 
-    averages: List[float] = [average(coll) for coll in colls]
+    ln = len(colls[0])  # length of every collection, presumably
+    assert all(len(c) == ln for c in colls), "Different-length collections"
 
-    colls_with_averages = zip(colls, averages)
+    # averages: List[float] = [average(coll) for coll in colls]
+    # colls_with_averages = zip(colls, averages)
 
-    # pairs are being made in greedy-per-collection manner:
-    # given x1, x2, x3 collections,
-    # it will exhaust x1, later x2 and eventually x3
-    # x1-x2, x1-x3, x2-x3
-    # also, how it would look like in the matrices?
+    results = []
+
     pairs = combinations(colls, 2)
+    for pair in pairs:
+        f, s = pair  # first and second
+        f_avg, s_avg = average(f), average(s)
+        cov = sum((f - f_avg) * (s - s_avg) for x, y in zip(f, s)) / ln
+        results.append(cov)
 
-    for idx, coll in enumerate(colls):
-        pass
-
-
-# TODO:
-# For allowing calculations of covariance or pcc, we can make combinations
-# out of available variables.
-#
-# from itertools import combinations
-# list(map(lambda pair: covariance(*pair), combinations([ys, xs1, xs2], 2)))
-# >>> [1208.5, 576.0, 546.0]
-#
-# list(map(lambda pair: pearson_correlation_coefficient(*pair), combinations([ys, xs1, xs2], 2)))
-# [0.9714911154609688, 0.5691548168397905, 0.6446999952267405]
+    return results
 
 
 def pearson_correlation_coefficient(xs: Numbers, ys: Numbers) -> float:
