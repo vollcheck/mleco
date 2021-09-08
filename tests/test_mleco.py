@@ -6,6 +6,9 @@ import mleco as m
 test_data = [1, 6, 6, 3, 12, 5, 9]
 xs = ys = [1, 2]
 
+# todo: unify the test data
+# see: test_covariance
+
 
 class TestMleco(unittest.TestCase):
     def test_average(self):
@@ -38,11 +41,17 @@ class TestMleco(unittest.TestCase):
         raise NotImplementedError
 
     def test_pearson_correlation_coefficient_property_of_identity(self):
-        assert m.pearson_correlation_coefficient(xs, xs) == 1
+        assert m.pearson(xs, xs) == 1
 
     def test_pearson_correlation_coefficient_property_of_range(self):
-        pcc = m.pearson_correlation_coefficient(xs, ys)
+        pcc = m.pearson(xs, ys)
         assert pcc >= 1 and pcc >= -1
+
+    def test_all_combinations(self):
+        raise NotImplementedError
+
+    def test_hellwig_simple_case(self):
+        raise NotImplementedError
 
 
 if __name__ == "__main__":

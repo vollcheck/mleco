@@ -84,6 +84,21 @@ def pearson(*colls) -> Union[float, List[float]]:
     return results
 
 
+def all_combinations(*colls) -> List:
+    """
+    Given arbitrary number of collections, creates list of every possible
+    combination except the ones with duplications within one case.
+    """
+    return [subset for r in range(len(colls) + 1) for subset in combinations(colls, r)]
+
+
 def hellwig(*colls):
-    # To be implemented
-    pass
+    all_c = all_combinations(*colls)
+    return all_c
+
+td = [1, 2, 3]
+
+# test data
+ys = [19, 21, 37, 14, 43]
+xs = [5, 8, 7, 3, 16]
+zs = [62, 92, 73, 103, 84]

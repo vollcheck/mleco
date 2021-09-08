@@ -21,4 +21,6 @@ I find that set of functions pretty helpful in solving *econometric* exercises.
 
 
 ## CI
+- tests
+- linting (black?)
 https://github.com/actions/starter-workflows
