@@ -29,7 +29,9 @@ class TestMleco(unittest.TestCase):
         zs = [62, 92, 73, 103, 84]
 
         assert m.covariance(ys, xs, zs) == [
-            41.35999999999999, -46.04, -3.839999999999999
+            41.35999999999999,
+            -46.04,
+            -3.839999999999999,
         ]
 
     def test_pearson_correlation_coefficient(self):
