@@ -46,16 +46,18 @@ def covariance(*colls) -> List[float]:
     ln = len(colls[0])  # length of every collection, presumably
     assert all(len(c) == ln for c in colls), "Different-length collections"
 
-    # averages: List[float] = [average(coll) for coll in colls]
-    # colls_with_averages = zip(colls, averages)
+    averages: List[float] = [average(coll) for coll in colls]
+    averages_indexes: list = list(combinations(range(len(colls)), 2))
+
+    pairs = combinations(colls, 2)
 
     results = []
 
-    pairs = combinations(colls, 2)
-    for pair in pairs:
-        f, s = pair  # first and second
-        f_avg, s_avg = average(f), average(s)
-        cov = sum((f - f_avg) * (s - s_avg) for x, y in zip(f, s)) / ln
+    for idx, pair in enumerate(pairs):
+        f, s = pair
+        number_f, number_s = averages_indexes[idx]
+        f_avg, s_avg = averages[number_f], averages[number_s]
+        cov = sum((x - f_avg) * (y - s_avg) for x, y in zip(f, s)) / ln
         results.append(cov)
 
     return results
