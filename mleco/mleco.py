@@ -1,3 +1,4 @@
+from functools import lru_cache
 from itertools import combinations
 from math import sqrt
 
@@ -6,6 +7,7 @@ from typing import List, Union
 from mleco.types import Numbers
 
 
+@lru_cache
 def average(xs: Numbers) -> float:
     """
     Calculates an arithmetic average.
@@ -13,6 +15,7 @@ def average(xs: Numbers) -> float:
     return sum(xs) / len(xs)
 
 
+@lru_cache
 def variance(xs: Numbers) -> float:
     """
     Calculates a variance.
@@ -21,6 +24,7 @@ def variance(xs: Numbers) -> float:
     return sum((x - avg) ** 2 for x in xs) / len(xs)
 
 
+@lru_cache
 def standard_deviation(data: Numbers) -> float:
     return sqrt(variance(data))
 
@@ -35,11 +39,12 @@ def coefficient_of_variation(
     return cfc
 
 
-def covariance(*colls) -> List[float]:
+@lru_cache
+def covariance(*colls) -> Union[float, List[float]]:
     """
     Function for calculating covariance for more than two collections.
 
-    It play around with combinations so that every element has a pair.
+    It plays around with combinations so that every element has a pair.
     """
     assert len(colls) > 1, "Too few collections"
 
@@ -47,7 +52,7 @@ def covariance(*colls) -> List[float]:
     assert all(len(c) == ln for c in colls), "Different-length collections"
 
     averages: List[float] = [average(coll) for coll in colls]
-    averages_indexes: list = list(combinations(range(len(colls)), 2))
+    averages_indexes = list(combinations(range(len(colls)), 2))
 
     pairs = combinations(colls, 2)
 
@@ -60,18 +65,23 @@ def covariance(*colls) -> List[float]:
         cov = sum((x - f_avg) * (y - s_avg) for x, y in zip(f, s)) / ln
         results.append(cov)
 
+    if len(results) == 1:
+        return results[0]
     return results
 
 
-def pearson_correlation_coefficient(xs: Numbers, ys: Numbers) -> float:
+@lru_cache
+def pearson(*colls) -> Union[float, List[float]]:
     """
-    Calculates Pearson linear correlation coefficient.
+    Calculates Pearson linear correlation coefficient among every combination
+    that occurs in the `colls`.
     """
+    sd = standard_deviation  # shorten the name for inline usage
+    results = [(covariance(*p) / sd(p[0]) * sd(p[1])) for p in combinations(colls, 2)]
 
-    # TODO: write implementation for more than one explanatory variable
-    #       also do we need matrices?
-
-    return covariance(xs, ys) / (standard_deviation(xs) * standard_deviation(ys))
+    if len(results) == 1:
+        return results[0]
+    return results
 
 
 def hellwig(*colls):

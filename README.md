@@ -18,3 +18,7 @@ I find that set of functions pretty helpful in solving *econometric* exercises.
 - create front-end to allow in-browser usage
 - rework: make every function step-like and pass the vectors throught the pipelines of calculations
 - more documentation within function definitions?
+
+
+## CI
+https://github.com/actions/starter-workflows
