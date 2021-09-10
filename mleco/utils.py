@@ -4,7 +4,7 @@ Module with functions that helps with dealing with formulas and reporting its re
 
 from typing import Dict, Union
 
-from types import Numbers
+# from types import Numbers
 
 
 def interpret_pcc(pcc: float) -> Dict[str, str]:
