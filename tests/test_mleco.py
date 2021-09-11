@@ -53,6 +53,17 @@ class TestMleco(unittest.TestCase):
     def test_hellwig_simple_case(self):
         raise NotImplementedError
 
+    def test_linear_regression_simple(self):
+        ys = [5, 2, 4, 3, 1, 6]
+        xs = [2, 1, 5, 5, 3, 8]
+        assert linear_regression(ys, xs) == 0.4375
+
+    def test_linear_regression_wrong_lengths_of_vectors(self):
+        ys = [5, 2, 4, 3, 1, 6]
+        xs = [2, 1]
+        # assert raises AssertionError("Vectors length disparity")
+        assert linear_regression(ys, xs) == 0.4375
+
 
 if __name__ == "__main__":
     unittest.main()
