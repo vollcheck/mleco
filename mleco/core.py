@@ -1,7 +1,7 @@
 from itertools import combinations
 from math import sqrt
 
-from typing import List, Union
+from typing import List, Union, Dict
 
 Numbers = List[Union[int, float]]
 
@@ -103,14 +103,85 @@ def hellwig(vec_r0: Numbers, vec_r: Numbers):
     return
 
 
-td = [1, 2, 3]
+def linear_regression(ys: Numbers, xs: Numbers) -> Dict[str, float]:
+    """
+    Calculates regression for formula with only one variable.
+    """
+    assert len(xs) == len(ys), "Vectors length disparity"
+
+    xs_avg, ys_avg = average(xs), average(ys)
+
+    a1 = sum((x - xs_avg) * (y - ys_avg) for x, y in zip(xs, ys)) / sum(
+        (x - xs_avg) ** 2 for x in xs
+    )
+
+    a0 = ys_avg - a1 * xs_avg
+
+    return {"a0": a0, "a1": a1, "model formula": f"^Yt = {a0} + {a1}Xt"}
+
+
+from dataclasses import dataclass
+
+
+@dataclass
+class Matrix:
+    x: List[Numbers]
+
+    # make those lazy using generators?
+
+    def __mul__(self, other: Union[int, float, Numbers, Matrix]) -> Matrix:
+        if isinstance(other, int) or isinstance(other, float):
+            result = [[x * other for x in row] for row in self.x]
+        elif isinstance(other, list):
+            result = [[x * y for x, y in zip(other, row)] for row in self.x]
+        elif isinstance(other, Matrix):
+            result = [
+                [x * y for x, y in zip(row_self, row_other)]
+                for row_self, row_other in zip(self.x, other.x)
+            ]
+
+        return Matrix(result)
+
+    def __str__(self) -> str:
+        return "\n".join(f"|{v}|" for v in self.x)
+
+    def invert(self) -> Matrix:
+        return
+
+    def transpose(self) -> Matrix:
+        t = [[self.x[j][i] for j in range(len(self.x))] for i in range(len(self.x[0]))]
+        return Matrix(t)
+        # return self.__str__(t)
+
+
+x = [[1, 2], [3, 4]]
+g = [[2, 2], [2, 2]]
+rx = Matrix(x)
+gx = Matrix(g)
+print(rx * gx)  # * other matrix
+# print(rx * 4)  # * other scalar
+# print(rx * [3, 4])  # * other vector
+# print(rx.transpose())
+
+
+def multiple_regression(*colls) -> dict:
+    """
+    Calculates regression for formula with more than one variable.
+    """
+    pass
+
 
 # test data
-ys = [19, 21, 37, 14, 43]
-xs = [5, 8, 7, 3, 16]
-zs = [62, 92, 73, 103, 84]
+# td = [1, 2, 3]
+# ys = [19, 21, 37, 14, 43]
+# xs = [5, 8, 7, 3, 16]
+# zs = [62, 92, 73, 103, 84]
 
 # test data for minimal examples
 # ys = [8, 10, 16, 22, 30, 37]
 # xs = [14, 15, 16, 27, 25, 30]
-pearson(ys, xs, zs)
+# pearson(ys, xs, zs)
+
+# ys = [5, 2, 4, 3, 1, 6]
+# xs = [2, 1, 5, 5, 3, 8]
+# print(linear_regression(ys, xs))
