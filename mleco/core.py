@@ -130,6 +130,9 @@ class Matrix:
     # make those lazy using generators?
 
     def __mul__(self, other: Union[int, float, Numbers, Matrix]) -> Matrix:
+
+        # check whether multiplication is possible
+
         if isinstance(other, int) or isinstance(other, float):
             result = [[x * other for x in row] for row in self.x]
         elif isinstance(other, list):

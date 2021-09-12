@@ -64,6 +64,24 @@ class TestMleco(unittest.TestCase):
         # assert raises AssertionError("Vectors length disparity")
         assert linear_regression(ys, xs) == 0.4375
 
+    def test_matrix_multiplication_by_other_matrix(self):
+        pass
+
+    def test_matrix_multiplication_by_vector(self):
+        pass
+
+    def test_matrix_multiplication_by_scalar(self):
+        pass
+
+    def test_matrix_multiplication_with_different_size(self):
+        pass
+
+    def test_matrix_str_representation(self):
+        pass
+
+    def test_matrix_transposing(self):
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()
