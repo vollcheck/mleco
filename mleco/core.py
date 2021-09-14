@@ -120,40 +120,39 @@ def linear_regression(ys: Numbers, xs: Numbers) -> Dict[str, float]:
     return {"a0": a0, "a1": a1, "model formula": f"^Yt = {a0} + {a1}Xt"}
 
 
-from dataclasses import dataclass
-
-
-@dataclass
 class Matrix:
-    x: List[Numbers]
-
     # make those lazy using generators?
 
-    def __mul__(self, other: Union[int, float, Numbers, Matrix]) -> Matrix:
+    def __init__(self, x, *args, **kwargs):
+        self.x: List[Numbers] = x
 
-        # check whether multiplication is possible
-
+    def __mul__(self, other: Union[int, float, Numbers, "Matrix"]) -> "Matrix":
         if isinstance(other, int) or isinstance(other, float):
             result = [[x * other for x in row] for row in self.x]
-        elif isinstance(other, list):
-            result = [[x * y for x, y in zip(other, row)] for row in self.x]
-        elif isinstance(other, Matrix):
-            result = [
-                [x * y for x, y in zip(row_self, row_other)]
-                for row_self, row_other in zip(self.x, other.x)
-            ]
 
-        return Matrix(result)
+        elif isinstance(other, list):
+            result = [sum(x * y for x, y in zip(other, row)) for row in self.x]
+
+        elif isinstance(other, Matrix):
+            # need to check whether the matrix multiplication is possible
+            self_h, self_w = len(self.x), len(self.x[0])
+            other_h, other_w = len(other.x), len(other.x[0])
+            assert self_w == other_h
+
+            # core algorithm
+            result = [[sum(a*b for a, b in zip(a_row, b_col)) for b_col in zip(*other.x)] for a_row in self.x]
+
+        return result
 
     def __str__(self) -> str:
         return "\n".join(f"|{v}|" for v in self.x)
 
-    def invert(self) -> Matrix:
+    def invert(self) -> "Matrix":
         return
 
-    def transpose(self) -> Matrix:
+    def transpose(self) -> "Matrix":
         t = [[self.x[j][i] for j in range(len(self.x))] for i in range(len(self.x[0]))]
-        return Matrix(t)
+        return t
         # return self.__str__(t)
 
 
