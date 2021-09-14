@@ -1,9 +1,8 @@
 from itertools import combinations
 from math import sqrt
-
 from typing import List, Union, Dict
 
-Numbers = List[Union[int, float]]
+from mleco import Numbers
 
 
 def average(xs: Numbers) -> float:
@@ -76,8 +75,10 @@ def pearson(*colls) -> Union[float, List[float]]:
     return results[0] if len(results) == 1 else results
 
 
-def all_combinations(*colls) -> List:
+def _all_combinations(*colls) -> List:
     """
+    Helper function.
+
     Given arbitrary number of collections, creates list of every possible
     combination except the ones with duplications within one case.
     """
@@ -120,70 +121,8 @@ def linear_regression(ys: Numbers, xs: Numbers) -> Dict[str, float]:
     return {"a0": a0, "a1": a1, "model formula": f"^Yt = {a0} + {a1}Xt"}
 
 
-class Matrix:
-    # make those lazy using generators?
-
-    def __init__(self, x, *args, **kwargs):
-        self.x: List[Numbers] = x
-
-    def __mul__(self, other: Union[int, float, Numbers, "Matrix"]) -> "Matrix":
-        if isinstance(other, int) or isinstance(other, float):
-            result = [[x * other for x in row] for row in self.x]
-
-        elif isinstance(other, list):
-            result = [sum(x * y for x, y in zip(other, row)) for row in self.x]
-
-        elif isinstance(other, Matrix):
-            # need to check whether the matrix multiplication is possible
-            self_h, self_w = len(self.x), len(self.x[0])
-            other_h, other_w = len(other.x), len(other.x[0])
-            assert self_w == other_h
-
-            # core algorithm
-            result = [[sum(a*b for a, b in zip(a_row, b_col)) for b_col in zip(*other.x)] for a_row in self.x]
-
-        return result
-
-    def __str__(self) -> str:
-        return "\n".join(f"|{v}|" for v in self.x)
-
-    def invert(self) -> "Matrix":
-        return
-
-    def transpose(self) -> "Matrix":
-        t = [[self.x[j][i] for j in range(len(self.x))] for i in range(len(self.x[0]))]
-        return t
-        # return self.__str__(t)
-
-
-x = [[1, 2], [3, 4]]
-g = [[2, 2], [2, 2]]
-rx = Matrix(x)
-gx = Matrix(g)
-print(rx * gx)  # * other matrix
-# print(rx * 4)  # * other scalar
-# print(rx * [3, 4])  # * other vector
-# print(rx.transpose())
-
-
 def multiple_regression(*colls) -> dict:
     """
     Calculates regression for formula with more than one variable.
     """
     pass
-
-
-# test data
-# td = [1, 2, 3]
-# ys = [19, 21, 37, 14, 43]
-# xs = [5, 8, 7, 3, 16]
-# zs = [62, 92, 73, 103, 84]
-
-# test data for minimal examples
-# ys = [8, 10, 16, 22, 30, 37]
-# xs = [14, 15, 16, 27, 25, 30]
-# pearson(ys, xs, zs)
-
-# ys = [5, 2, 4, 3, 1, 6]
-# xs = [2, 1, 5, 5, 3, 8]
-# print(linear_regression(ys, xs))
